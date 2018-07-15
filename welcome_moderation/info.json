@@ -1,0 +1,10 @@
+{
+  "AUTHOR": "#s#8059",
+  "INSTALL_MSG": "Hey there, thanks for installing my cog! If you have any questions about this cog, feel free to ask!",
+  "NAME": "WelcomeModeration",
+  "DISABLED": false,
+  "SHORT": "Use custom welcome messages and a verification role on a guild-by-guild basis .",
+  "REQUIREMENTS" : [],
+  "DESCRIPTION": "Use custom welcome messages and a verification role on a guild-by-guild basis.\nThe verification role will be given to a member if it obtains any role in whatever way, except if the role obtained is blacklisted in the settings.\nThe use for this is to have one role to set up permissions for. If used properly, this role can only be given to those who satisfy the Discord verification level.\nExample usage: a guild that has a role for each rank of a certain game, but want one role to manage the permissions of all people that have a role (whilst not giving those perms to @everyone). Both the welcome functionality and verification functionality are optional and customizable.",
+  "TAGS": ["welcome", "join", "moderation", "verification", "autorole"]
+}

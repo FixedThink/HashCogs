@@ -1,0 +1,10 @@
+{
+  "AUTHOR": "#s#8059",
+  "INSTALL_MSG": "Hello, thanks for installing this cog! This cog will be used by me to create a varied scope of commands (or just to try out things). Ideas are appreciated!",
+  "NAME": "FixedVarious",
+  "DISABLED": false,
+  "SHORT": "Various commands that cannot be classified under any other HashCogs",
+  "DESCRIPTION": "Various commands that cannot be classified under any other HashCogs. Basically, a module for me to try out standalone commands with some form of utility.\nEventually, a collection of such commands may end up in another module.",
+  "REQUIREMENTS" : [],
+  "TAGS": []
+}
