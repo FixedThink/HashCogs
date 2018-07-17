@@ -82,7 +82,7 @@ class FixedVarious:
             file_stamp = datetime.datetime.utcnow().strftime("%Y-%m-%d_%H_%M_%S")
 
             csv_name = self.FOLDER + "/{} at {}.csv".format(srv_name, file_stamp)
-            with open(csv_name, 'w', newline='', errors="ignore") as csv_f:
+            with open(csv_name, 'w', newline='', errors="ignore", encoding='utf-8') as csv_f:
                 csv_w = csv.writer(csv_f, delimiter=delimiter)
                 csv_w.writerow(["Join #", "Username", "UserID", "Joined at", "Account created at",
                                 "Days since join", "Account age (days)", "Account age before join (days)"])
