@@ -1,6 +1,6 @@
 import discord
 
-from discord.ext import commands
+from redbot.core import commands  # Changed from discord.ext
 from redbot.core import checks, Config
 
 
