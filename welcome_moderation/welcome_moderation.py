@@ -85,7 +85,7 @@ class WelcomeModeration:
             if new_role_eligible and can_verify_user:
                 assignment_delay = await self.config.guild(gld).verified_delay_seconds()
                 confirmation = await self.config.guild(gld).confirm_channel_id()
-                if confirmation:
+                if confirmation and not m_new.bot:  # Bots are unconscious (for now...).
                     if assignment_delay:
                         confirm_msg = self.DELAY_NOTICE.format(m_new.mention, assignment_delay)
                     else:

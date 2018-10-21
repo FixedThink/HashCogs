@@ -13,6 +13,7 @@ class FixedVarious:
 
     ROLE_ROW = "`{:02d} \u200b` {} - **{}**"
     MAX_RMSE = "**Number:** {}\nMax sum of squares: {}\nMax square per position: {}\n\nMax RMSE: {:0.3f}"
+    GOTO_LINK = "<https://discordapp.com/channels/{gld_id}/{chn_id}/{msg_id}>"
 
     def __init__(self, bot):
         self.bot = bot
@@ -22,6 +23,28 @@ class FixedVarious:
     # Events
 
     # Commands
+    @commands.command()
+    async def avatar(self, ctx, user: discord.Member=None):
+        """Get an enhanced version of someone's avatar"""
+        if user is None:
+            user = ctx.author
+        avatar_url = user.avatar_url
+
+        embed = discord.Embed(colour=discord.Colour.blurple())
+        embed.title = f"Avatar of {user.display_name}"
+        embed.description = f"**Image link:**  [Click here]({avatar_url})"
+        embed.set_image(url=avatar_url)
+        embed.set_footer(text=f"User ID: {user.id}")
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def goto(self, ctx, channel: discord.TextChannel, message_id: int):
+        """Get a link to jump to a certain message in a channel.
+
+        channel must be a channel __on a server__ that the bot is on.
+        If no valid message ID is used, the link will direct to where the message would have been in chat."""
+        await ctx.send(self.GOTO_LINK.format(gld_id=ctx.guild.id, chn_id=channel.id, msg_id=message_id))
+
     @commands.command()
     async def spotify(self, ctx, user: discord.Member=None):
         """Check what someone is listening to"""
@@ -60,7 +83,7 @@ class FixedVarious:
 
     @commands.command(aliases=["timestamp"])
     async def snowflake(self, ctx, snowflake_id: int):
-        """Convert a Snowflake ID to a date"""
+        """Convert a Snowflake ID to a datetime"""
         dt = discord.utils.snowflake_time(snowflake_id)
         time_str = dt.strftime("%A %d %B %Y at %H:%M:%S")
         await ctx.send("**Input:** {}\n**Time (UTC):** {}".format(snowflake_id, time_str))
