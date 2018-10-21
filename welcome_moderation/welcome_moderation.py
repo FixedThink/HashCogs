@@ -5,7 +5,10 @@ from redbot.core import commands  # Changed from discord.ext
 from redbot.core import checks, Config
 
 
-class WelcomeModeration:
+BaseCog = getattr(commands, "Cog", object)
+
+
+class WelcomeModeration(BaseCog):
     """Use custom welcome messages and a verification role on a guild-by-guild basis.
 
     The verification role will be given to a member if it obtains any role in whatever way,

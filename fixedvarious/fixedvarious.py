@@ -7,13 +7,20 @@ from redbot.core import commands  # Changed from discord.ext
 from redbot.core import checks, Config, data_manager
 
 
-class FixedVarious:
+BaseCog = getattr(commands, "Cog", object)
+
+
+class FixedVarious(BaseCog):
     """Various commands that cannot be classified under any other HashCogs"""
     __author__ = "#s#8059"
 
     ROLE_ROW = "`{:02d} \u200b` {} - **{}**"
     MAX_RMSE = "**Number:** {}\nMax sum of squares: {}\nMax square per position: {}\n\nMax RMSE: {:0.3f}"
     GOTO_LINK = "<https://discordapp.com/channels/{gld_id}/{chn_id}/{msg_id}>"
+    SLOWMODE_SET = ":white_check_mark: The slowmode in this channel has been set to {} second{}."
+    SLOWMODE_OFF = ":put_litter_in_its_place: The slowmode in this channel has been disabled."
+    SLOWMODE_INVALID_INT = ":x: Error: seconds must be a value between 0 and 120 inclusive."
+    SLOWMODE_NO_PERMS = ":x: Error: I need Manage Channel permissions to set a slowmode!"
 
     def __init__(self, bot):
         self.bot = bot
@@ -44,6 +51,26 @@ class FixedVarious:
         channel must be a channel __on a server__ that the bot is on.
         If no valid message ID is used, the link will direct to where the message would have been in chat."""
         await ctx.send(self.GOTO_LINK.format(gld_id=ctx.guild.id, chn_id=channel.id, msg_id=message_id))
+
+    @commands.command()
+    @checks.admin_or_permissions(manage_channels=True)
+    async def set_slowmode(self, ctx, seconds: int):
+        """Set the Discord slowmode in this channel.
+
+        seconds must be a number between 0 and 120 inclusive.
+        If seconds is 0, slowmode will be turned off.
+        Requires Manage Channel permissions to be used."""
+        if 0 <= seconds <= 120:
+            try:
+                await ctx.channel.edit(slowmode_delay=seconds)
+            except discord.Forbidden:  # Manage channel perms required.
+                notice = self.SLOWMODE_NO_PERMS
+            else:
+                plural_s = "" if seconds == 1 else "s"
+                notice = self.SLOWMODE_OFF if seconds == 0 else self.SLOWMODE_SET.format(seconds, plural_s)
+        else:  # Invalid int for slowmode.
+            notice = self.SLOWMODE_INVALID_INT
+        await ctx.send(notice)
 
     @commands.command()
     async def spotify(self, ctx, user: discord.Member=None):
