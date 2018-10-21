@@ -28,7 +28,7 @@ class FixedVarious:
         """Get an enhanced version of someone's avatar"""
         if user is None:
             user = ctx.author
-        avatar_url = user.avatar_url
+        avatar_url = user.avatar_url_as(static_format="png")
 
         embed = discord.Embed(colour=discord.Colour.blurple())
         embed.title = f"Avatar of {user.display_name}"
