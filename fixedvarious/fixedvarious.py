@@ -3,6 +3,7 @@ import datetime
 import re
 
 import discord
+import redbot.core.utils.menus as red_menu
 from redbot.core import commands  # Changed from discord.ext
 from redbot.core import checks, Config, data_manager
 
@@ -14,9 +15,11 @@ class FixedVarious(BaseCog):
     """Various commands that cannot be classified under any other HashCogs"""
     __author__ = "#s#8059"
 
-    ROLE_ROW = "`{:02d} \u200b` {} - **{}**"
+    ROLE_ROW = "`{:02d}`\u2800{} - **{}**"
     MAX_RMSE = "**Number:** {}\nMax sum of squares: {}\nMax square per position: {}\n\nMax RMSE: {:0.3f}"
     GOTO_LINK = "<https://discordapp.com/channels/{gld_id}/{chn_id}/{msg_id}>"
+    DELIMITED_TOO_LONG = ":x: Error: the delimiter must be exactly one character."
+    GUILD_NO_ROLES = ":x: Error: This server has no roles."
     SLOWMODE_SET = ":white_check_mark: The slowmode in this channel has been set to {} second{}."
     SLOWMODE_OFF = ":put_litter_in_its_place: The slowmode in this channel has been disabled."
     SLOWMODE_INVALID_INT = ":x: Error: seconds must be a value between 0 and 120 inclusive."
@@ -125,7 +128,7 @@ class FixedVarious(BaseCog):
         Note: this command also automatically stores the csv file in the cog's data folder."""
         gld = ctx.guild
         if len(delimiter) != 1:
-            await ctx.send(":x: Error: the delimiter must be exactly one character.")
+            await ctx.send(self.DELIMITED_TOO_LONG)
         else:
             now = datetime.datetime.utcnow()
             srv_name = re.sub(r'\W+', '', gld.name)
@@ -165,21 +168,35 @@ class FixedVarious(BaseCog):
             embed_footer = "Roles sorted on role member count."
 
         role_count = len(sorted_roles)
-        if role_count > 0:
-            embed = discord.Embed(title="Server roles", colour=discord.Colour.blurple())
+        if role_count == 0:
+            await ctx.send(self.GUILD_NO_ROLES)
+        else:  # At least one role.
+            desc_str = "Total members: **{}**".format(gld.member_count)
+
             # Split the role list into fields with a maximum of 10 rows.
+            field_list = []
             for i in range((role_count // 10) + 1):
                 start = 10 * i
                 end = start + 10 if role_count > (start + 10) else role_count
+                field_name = "{}-{}".format(start + 1, end)
                 field_value = "\n".join((self.ROLE_ROW.format((i + 1), t[0], t[1])
                                          for i, t in enumerate(sorted_roles[start:end], start=start)))
-                embed.add_field(name="{}-{}".format(start + 1, end), value=field_value)
+                field_list.append((field_name, field_value))
 
-            embed.description = "Total members: **{}**".format(gld.member_count)
-            embed.set_footer(text=embed_footer)
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send(":x: Error: This server has no roles.")
-    # Utilities
-
-    # Config 
+            # Check whether all fields can be sent within one embed, or whether a menu is needed.
+            field_count = len(field_list)
+            if field_count < 3:  # All fields fit in one embed.
+                embed = discord.Embed(title="Server roles", description=desc_str, colour=discord.Colour.blurple())
+                for (f_name, f_value) in field_list:
+                    embed.add_field(name=f_name, value=f_value)
+                embed.set_footer(text=embed_footer)
+                await ctx.send(embed=embed)
+            else:  # Multiple embeds needed, use pagified menu.
+                embed_list = []
+                for n, (f_name, f_value) in enumerate(field_list, start=1):
+                    embed = discord.Embed(title="Server roles", description=desc_str, colour=discord.Colour.blurple())
+                    embed.add_field(name=f_name, value=f_value)
+                    footer_page_n = "Page {n} out of {total}. ".format(n=n, total=field_count)
+                    embed.set_footer(text=footer_page_n + embed_footer)
+                    embed_list.append(embed)
+                await red_menu.menu(ctx, embed_list, red_menu.DEFAULT_CONTROLS, timeout=30.0)
