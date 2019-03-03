@@ -3,12 +3,10 @@ import asyncio
 import discord
 from redbot.core import commands  # Changed from discord.ext
 from redbot.core import checks, Config
+from redbot.core.bot import Red
 
 
-BaseCog = getattr(commands, "Cog", object)
-
-
-class WelcomeModeration(BaseCog):
+class WelcomeModeration(commands.Cog):
     """Use custom welcome messages and a verification role on a guild-by-guild basis.
 
     The verification role will be given to a member if it obtains any role in whatever way,
@@ -19,11 +17,12 @@ class WelcomeModeration(BaseCog):
     Example usage: a guild that has a role for each rank of a certain game, but want one role to manage
     the permissions of all people that have a role (whilst not giving those perms to `@everyone`).
 
-    Both the welcome functionality and verification functionality are optional and customizable."""
+    Both the welcome functionality and verification functionality are optional and customisable."""
     __author__ = "#s#8059"
 
     ROLE_ASSIGN_ERROR = "ERROR: Cannot assign the verified role without the `Manage Roles` permission! Server ID: {}"
     NO_VER_ROLE = ":x: Verification role not found. Please make sure the role is configured and still exists."
+    OFF = "Disabled"
     # verified_all_members strings.
     ALL_START = "Verified check for all **`{}`** members started. This may take a while, updates will be sent."
     ALL_UPDATE = "**`{}`** out of `{}` members done. Current user: {}"
@@ -50,7 +49,8 @@ class WelcomeModeration(BaseCog):
     WELCOME_MSG_SET = ":white_check_mark: Successfully set the welcome message."
     WELCOME_MSG_RESET = ":put_litter_in_its_place: Welcome message cleared."
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
+        super().__init__()
         self.bot = bot
         self.config = Config.get_conf(self, identifier=7509, force_registration=True)
         self.config.register_guild(verified_role_id=None,
@@ -63,7 +63,7 @@ class WelcomeModeration(BaseCog):
 
     # Events
     async def on_member_join(self, member):
-        """Sends a customizable welcome message to a guild"""
+        """Sends a customisable welcome message to a guild"""
         gld = member.guild
         welcome_id = await self.config.guild(gld).welcome_channel_id()
         if welcome_id and not member.bot:  # Don't greet bots.
@@ -180,20 +180,20 @@ class WelcomeModeration(BaseCog):
         embed.description = f"```{welcome_msg}```" if welcome_msg else "`welcome message not set`"
         # Add all other configurations to their own fields.
         welcome_id = config_dict["welcome_channel_id"]
-        embed.add_field(name="Welcome channel", value=f"<#{welcome_id}>" if welcome_id else "Disabled")
+        embed.add_field(name="Welcome channel", value=f"<#{welcome_id}>" if welcome_id else self.OFF)
 
         log_id = config_dict["log_channel_id"]
-        embed.add_field(name="Log channel", value=f"<#{log_id}>" if log_id else "Disabled")
+        embed.add_field(name="Log channel", value=f"<#{log_id}>" if log_id else self.OFF)
 
         confirm_id = config_dict["confirm_channel_id"]
-        embed.add_field(name="Confirmation channel", value=f"<#{confirm_id}>" if confirm_id else "Disabled")
+        embed.add_field(name="Confirmation channel", value=f"<#{confirm_id}>" if confirm_id else self.OFF)
 
         role_id = config_dict["verified_role_id"]
-        role_str = (discord.utils.get(gld.roles, id=role_id)).mention if role_id else "Disabled"
+        role_str = (discord.utils.get(gld.roles, id=role_id)).mention if role_id else self.OFF
         embed.add_field(name="Verified role", value=role_str)
 
         delay = config_dict["verified_delay_seconds"]
-        embed.add_field(name="Verified role delay", value=f"{delay} seconds" if delay else "No delay")
+        embed.add_field(name="Verified role delay", value=f"{delay} seconds" if delay else self.OFF)
 
         black_roles = config_dict["ignored_roles"]
         black_str = (", ".join((discord.utils.get(gld.roles, id=r_id)).mention for r_id in black_roles)
@@ -239,7 +239,7 @@ it will __reset__ its configuration!
         """Set the roles to be ignored by the role verification.
 
         You can ignore as many roles as you'd like, but you must put them all in the same command.
-        If the bot does not recognize any of the roles that you provide, the command won't be executed."""
+        If the bot does not recognise any of the roles that you provide, the command won't be executed."""
         if len(roles) == 0:  # No roles provided, clear the config.
             to_send = self.TO_IGNORE_RESET
             await self.config.guild(ctx.guild).ignored_roles.clear()

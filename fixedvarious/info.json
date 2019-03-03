@@ -1,10 +1,12 @@
 {
-  "AUTHOR": "#s#8059",
-  "INSTALL_MSG": "Hello, thanks for installing this cog! This cog will be used by me to create a varied scope of commands (or just to try out things). Ideas are appreciated!",
-  "NAME": "FixedVarious",
-  "DISABLED": false,
-  "SHORT": "Various commands that cannot be classified under any other HashCogs",
-  "DESCRIPTION": "Various commands that cannot be classified under any other HashCogs. Basically, a module for me to try out standalone commands with some form of utility.\nEventually, a collection of such commands may end up in another module.",
-  "REQUIREMENTS" : [],
-  "TAGS": []
+  "author": [
+    "#s#8059"
+  ],
+  "description": "Various commands that cannot be classified under any other of my modules, mostly standalone commands with some form of utility.\nEventually, a collection of these commands may end up in a separate module.",
+  "install_msg": "Hello, thanks for installing this cog! This cog is used for a varied scope of commands, or just to try out things. Ideas are appreciated!",
+  "short": "Various commands that cannot be classified under any other of my modules.",
+  "name": "FixedVarious",
+  "disabled": false,
+  "requirements": [],
+  "tags": ["slowmode", "roles", "spotify"]
 }

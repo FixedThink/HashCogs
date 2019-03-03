@@ -6,17 +6,14 @@ import discord
 import redbot.core.utils.menus as red_menu
 from redbot.core import commands  # Changed from discord.ext
 from redbot.core import checks, Config, data_manager
+from redbot.core.bot import Red
 
 
-BaseCog = getattr(commands, "Cog", object)
-
-
-class FixedVarious(BaseCog):
-    """Various commands that cannot be classified under any other HashCogs"""
+class FixedVarious(commands.Cog):
+    """Various commands that cannot be classified under any other modules"""
     __author__ = "#s#8059"
 
-    ROLE_ROW = "`{:02d}`\u2800{} - **{}**"
-    MAX_RMSE = "**Number:** {}\nMax sum of squares: {}\nMax square per position: {}\n\nMax RMSE: {:0.3f}"
+    ROLE_ROW = "`{:0{}d}` {} • **{}**"
     GOTO_LINK = "<https://discordapp.com/channels/{gld_id}/{chn_id}/{msg_id}>"
     DELIMITED_TOO_LONG = ":x: Error: the delimiter must be exactly one character."
     GUILD_NO_ROLES = ":x: Error: This server has no roles."
@@ -25,7 +22,8 @@ class FixedVarious(BaseCog):
     SLOWMODE_INVALID_INT = ":x: Error: seconds must be a value between 0 and 120 inclusive."
     SLOWMODE_NO_PERMS = ":x: Error: I need Manage Channel permissions to set a slowmode!"
 
-    def __init__(self, bot):
+    def __init__(self, bot: Red):
+        super().__init__()
         self.bot = bot
         self.config = Config.get_conf(self, identifier=220420188059)
         self.FOLDER = str(data_manager.cog_data_path(self))
@@ -34,7 +32,7 @@ class FixedVarious(BaseCog):
 
     # Commands
     @commands.command()
-    async def avatar(self, ctx, user: discord.Member=None):
+    async def avatar(self, ctx, user: discord.Member = None):
         """Get an enhanced version of someone's avatar"""
         if user is None:
             user = ctx.author
@@ -83,16 +81,14 @@ class FixedVarious(BaseCog):
         act = user.activity
         if act and act.name == "Spotify":
             spot = act
-
             # Create value for song field.
             mins, secs = divmod(spot.duration.seconds, 60)
             song_length = "{:02d}:{:02d}".format(mins, secs)
             song_url = "https://open.spotify.com/track/{}".format(spot.track_id)
             song_value = "[{}]({}) ({})".format(spot.title, song_url, song_length)
-
+            # Create embed.
             embed = discord.Embed(colour=spot.colour)
             embed.title = "Spotify of {} - Currently Playing".format(user.name)
-
             embed.add_field(name="Song", value=song_value, inline=False)
             embed.add_field(name="Artist", value=",".join(spot.artists), inline=False)
             embed.add_field(name="Album", value=spot.album, inline=False)
@@ -100,16 +96,6 @@ class FixedVarious(BaseCog):
             await ctx.send(embed=embed)
         else:
             await ctx.send("User is not currently listening to Spotify.")
-
-    @commands.command(name="rmse")
-    async def ranking_max_rmse(self, ctx, n: int):
-        """Calculates the biggest RMSE that two different rankings of n items could have
-
-        n must be an integer number."""
-        max_avg_sq = (n ** 2 - 1) // 3  # Adaption of Spearman's correlation.
-        sum_sq = max_avg_sq * 43
-        max_root = max_avg_sq ** 0.5
-        await ctx.send(self.MAX_RMSE.format(n, sum_sq, max_avg_sq, max_root))
 
     @commands.command(aliases=["timestamp"])
     async def snowflake(self, ctx, snowflake_id: int):
@@ -121,10 +107,10 @@ class FixedVarious(BaseCog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(manage_roles=True)
-    async def member_csv(self, ctx, delimiter: str= ";"):
+    async def member_csv(self, ctx, delimiter: str = "\t"):
         """Export the member list to a csv file
 
-        The delimiter must be exactly one character (or undefined).
+        The delimiter must be exactly one character (or undefined), and is a Tab by default.
         Note: this command also automatically stores the csv file in the cog's data folder."""
         gld = ctx.guild
         if len(delimiter) != 1:
@@ -150,9 +136,9 @@ class FixedVarious(BaseCog):
 
             await ctx.send(content="Here is a csv file with the member list.", file=discord.File(csv_name))
 
-    @commands.command(name="roles")
+    @commands.command(name="role_stats", aliases=["rolestats"])
     @commands.guild_only()
-    async def role_population_embed(self, ctx, hierarchy_sort: bool=None):
+    async def role_population_embed(self, ctx, hierarchy_sort: bool = None):
         """Show the amount of members of each role
 
         If `hierarchy_sort` is left empty, `no`, `n`, or `False`, the roles will be sorted on population.
@@ -172,17 +158,16 @@ class FixedVarious(BaseCog):
             await ctx.send(self.GUILD_NO_ROLES)
         else:  # At least one role.
             desc_str = "Total members: **{}**".format(gld.member_count)
-
+            width = len(str(role_count))
             # Split the role list into fields with a maximum of 10 rows.
             field_list = []
             for i in range((role_count // 10) + 1):
                 start = 10 * i
                 end = start + 10 if role_count > (start + 10) else role_count
                 field_name = "{}-{}".format(start + 1, end)
-                field_value = "\n".join((self.ROLE_ROW.format((i + 1), t[0], t[1])
+                field_value = "\n".join((self.ROLE_ROW.format((i + 1), width, t[0], t[1])
                                          for i, t in enumerate(sorted_roles[start:end], start=start)))
                 field_list.append((field_name, field_value))
-
             # Check whether all fields can be sent within one embed, or whether a menu is needed.
             field_count = len(field_list)
             if field_count < 3:  # All fields fit in one embed.
@@ -196,7 +181,7 @@ class FixedVarious(BaseCog):
                 for n, (f_name, f_value) in enumerate(field_list, start=1):
                     embed = discord.Embed(title="Server roles", description=desc_str, colour=discord.Colour.blurple())
                     embed.add_field(name=f_name, value=f_value)
-                    footer_page_n = "Page {n} out of {total}. ".format(n=n, total=field_count)
+                    footer_page_n = "{n} of {total}.".format(n=n, total=field_count)
                     embed.set_footer(text=footer_page_n + embed_footer)
                     embed_list.append(embed)
                 await red_menu.menu(ctx, embed_list, red_menu.DEFAULT_CONTROLS, timeout=30.0)
