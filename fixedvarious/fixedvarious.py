@@ -1,10 +1,12 @@
+# Default Library.
 import csv
 import datetime
 import re
 
+# Required by Red.
 import discord
 import redbot.core.utils.menus as red_menu
-from redbot.core import commands  # Changed from discord.ext
+from redbot.core import commands
 from redbot.core import checks, Config, data_manager
 from redbot.core.bot import Red
 
@@ -32,7 +34,7 @@ class FixedVarious(commands.Cog):
 
     # Commands
     @commands.command()
-    async def avatar(self, ctx, user: discord.Member = None):
+    async def avatar(self, ctx: commands.Context, user: discord.Member = None):
         """Get an enhanced version of someone's avatar"""
         if user is None:
             user = ctx.author
@@ -46,7 +48,7 @@ class FixedVarious(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def goto(self, ctx, channel: discord.TextChannel, message_id: int):
+    async def goto(self, ctx: commands.Context, channel: discord.TextChannel, message_id: int):
         """Get a link to jump to a certain message in a channel.
 
         channel must be a channel __on a server__ that the bot is on.
@@ -55,7 +57,7 @@ class FixedVarious(commands.Cog):
 
     @commands.command()
     @checks.admin_or_permissions(manage_channels=True)
-    async def set_slowmode(self, ctx, seconds: int):
+    async def set_slowmode(self, ctx: commands.Context, seconds: int):
         """Set the Discord slowmode in this channel.
 
         seconds must be a number between 0 and 120 inclusive.
@@ -74,7 +76,7 @@ class FixedVarious(commands.Cog):
         await ctx.send(notice)
 
     @commands.command()
-    async def spotify(self, ctx, user: discord.Member=None):
+    async def spotify(self, ctx: commands.Context, user: discord.Member = None):
         """Check what someone is listening to"""
         if user is None:
             user = ctx.author
@@ -98,7 +100,7 @@ class FixedVarious(commands.Cog):
             await ctx.send("User is not currently listening to Spotify.")
 
     @commands.command(aliases=["timestamp"])
-    async def snowflake(self, ctx, snowflake_id: int):
+    async def snowflake(self, ctx: commands.Context, snowflake_id: int):
         """Convert a Snowflake ID to a datetime"""
         dt = discord.utils.snowflake_time(snowflake_id)
         time_str = dt.strftime("%A %d %B %Y at %H:%M:%S")
@@ -107,7 +109,7 @@ class FixedVarious(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @checks.mod_or_permissions(manage_roles=True)
-    async def member_csv(self, ctx, delimiter: str = "\t"):
+    async def member_csv(self, ctx: commands.Context, delimiter: str = "\t"):
         """Export the member list to a csv file
 
         The delimiter must be exactly one character (or undefined), and is a Tab by default.
@@ -138,7 +140,7 @@ class FixedVarious(commands.Cog):
 
     @commands.command(name="role_stats", aliases=["rolestats"])
     @commands.guild_only()
-    async def role_population_embed(self, ctx, hierarchy_sort: bool = None):
+    async def role_population_embed(self, ctx: commands.Context, hierarchy_sort: bool = None):
         """Show the amount of members of each role
 
         If `hierarchy_sort` is left empty, `no`, `n`, or `False`, the roles will be sorted on population.
@@ -181,7 +183,7 @@ class FixedVarious(commands.Cog):
                 for n, (f_name, f_value) in enumerate(field_list, start=1):
                     embed = discord.Embed(title="Server roles", description=desc_str, colour=discord.Colour.blurple())
                     embed.add_field(name=f_name, value=f_value)
-                    footer_page_n = "{n} of {total}.".format(n=n, total=field_count)
+                    footer_page_n = "{n} of {total}. ".format(n=n, total=field_count)
                     embed.set_footer(text=footer_page_n + embed_footer)
                     embed_list.append(embed)
                 await red_menu.menu(ctx, embed_list, red_menu.DEFAULT_CONTROLS, timeout=30.0)

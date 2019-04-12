@@ -1,0 +1,12 @@
+{
+  "author": [
+    "#s#8059"
+  ],
+  "description": "Logs any DMs sent to the bot to a csv file. Note that the csv file is delimited with semicolons!",
+  "install_msg": "Thank you for installing this cog! Note that there are a few subtleties that may be important:\n1. The cog uses semicolons as delimiter. This may cause issues with some programs that read CSV files.\n2. It is possible to automatically make the bot owner DM the logs after x messages have been sent.",
+  "short": "Logs any DMs sent to the bot to a csv file.",
+  "name": "DMLogger",
+  "disabled": false,
+  "requirements": [],
+  "tags": []
+}
