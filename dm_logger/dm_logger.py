@@ -42,7 +42,7 @@ class DMLogger(commands.Cog):
             periodic_threshold = await self.config.periodic_log_threshold()
             if periodic_threshold and export_count >= periodic_threshold:
                 owner = (await self.bot.application_info()).owner
-                await owner.send(content="Periodical DM log export", file=discord.File(self.CSV_FP))
+                await owner.send(content="Periodical DM log export.", file=discord.File(self.CSV_FP))
                 await self.config.msgs_since_export.set(0)
             else:
                 await self.config.msgs_since_export.set(export_count)  # Incremented.
@@ -50,7 +50,7 @@ class DMLogger(commands.Cog):
     # Commands
     @commands.command(name="set_dm_threshold")
     @checks.is_owner()
-    async def _set_periodic_log_threshold(self, ctx: commands.Context, threshold: int):
+    async def set_periodic_log_threshold(self, ctx: commands.Context, threshold: int):
         """Set the threshold for the periodic DM export (to the bot owner)
 
         If the threshold is 0 (or less) no periodic messages will be sent.
@@ -58,6 +58,15 @@ class DMLogger(commands.Cog):
         to_set = None if threshold <= 0 else threshold
         await self.config.periodic_log_threshold.set(to_set)
         await ctx.tick()
+
+    @commands.command(name="get_dms")
+    @checks.is_owner()
+    async def send_dm_log(self, ctx: commands.Context):
+        """Send the DM log csv file as-is
+
+        This also resets the export count."""
+        await ctx.send(content="Below is the bot DM log.", file=discord.File(self.CSV_FP))
+        await self.config.msgs_since_export.set(0)
 
     # Utilities
     def log_dm_to_csv(self, msg: discord.Message):
