@@ -15,13 +15,15 @@ class FixedVarious(commands.Cog):
     """Various commands that cannot be classified under any other modules"""
     __author__ = "#s#8059"
 
+    MAX_SLOWMODE_SECS = 60 * 60 * 6  # 6 hours.
+
     ROLE_ROW = "`{:0{}d}` {} • **{}**"
     GOTO_LINK = "<https://discordapp.com/channels/{gld_id}/{chn_id}/{msg_id}>"
     DELIMITED_TOO_LONG = ":x: Error: the delimiter must be exactly one character."
     GUILD_NO_ROLES = ":x: Error: This server has no roles."
     SLOWMODE_SET = ":white_check_mark: The slowmode in this channel has been set to {} second{}."
     SLOWMODE_OFF = ":put_litter_in_its_place: The slowmode in this channel has been disabled."
-    SLOWMODE_INVALID_INT = ":x: Error: seconds must be a value between 0 and 120 inclusive."
+    SLOWMODE_INVALID_INT = ":x: Error: seconds must be a value between 0 and {} inclusive.".format(MAX_SLOWMODE_SECS)
     SLOWMODE_NO_PERMS = ":x: Error: I need Manage Channel permissions to set a slowmode!"
 
     def __init__(self, bot: Red):
@@ -34,7 +36,7 @@ class FixedVarious(commands.Cog):
 
     # Commands
     @commands.command()
-    async def avatar(self, ctx: commands.Context, user: discord.Member = None):
+    async def avatar(self, ctx: commands.Context, user: discord.User = None):
         """Get an enhanced version of someone's avatar"""
         if user is None:
             user = ctx.author
@@ -60,10 +62,10 @@ class FixedVarious(commands.Cog):
     async def set_slowmode(self, ctx: commands.Context, seconds: int):
         """Set the Discord slowmode in this channel.
 
-        seconds must be a number between 0 and 120 inclusive.
+        seconds must be a number between 0 and 21600 (6 hours) inclusive.
         If seconds is 0, slowmode will be turned off.
         Requires Manage Channel permissions to be used."""
-        if 0 <= seconds <= 120:
+        if 0 <= seconds <= self.MAX_SLOWMODE_SECS:
             try:
                 await ctx.channel.edit(slowmode_delay=seconds)
             except discord.Forbidden:  # Manage channel perms required.
@@ -147,7 +149,7 @@ class FixedVarious(commands.Cog):
         If `hierarchy_sort` is `yes`, `y`, or `True`, the roles will be sorted on hierarchy."""
         use_hierarchy = True if hierarchy_sort else False
         gld = ctx.guild
-        role_tuples = ((r.mention, len(r.members), r.position) for r in gld.roles if not r.is_default())
+        role_tuples = ((r.mention, len(r.members), r.position) for r in gld.roles if not self.ignore_role(r))
         if use_hierarchy:
             sorted_roles = sorted(role_tuples, key=lambda x: x[2], reverse=True)
             embed_footer = "Roles sorted on hierarchy."
@@ -187,3 +189,10 @@ class FixedVarious(commands.Cog):
                     embed.set_footer(text=footer_page_n + embed_footer)
                     embed_list.append(embed)
                 await red_menu.menu(ctx, embed_list, red_menu.DEFAULT_CONTROLS, timeout=30.0)
+
+    @staticmethod
+    def ignore_role(role: discord.Role) -> bool:
+        """Check whether to ignore a role for the population embed
+
+        If True, the role should be ignored. Else False."""
+        return role.is_default() or not any(c != "\u2800" for c in role.name)
