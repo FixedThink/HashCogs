@@ -20,6 +20,9 @@ class WelcomeModeration(commands.Cog):
     Both the welcome functionality and verification functionality are optional and customisable."""
     __author__ = "#s#8059"
 
+    BIN = ":put_litter_in_its_place: "
+    DONE = ":white_check_mark: "
+
     ROLE_ASSIGN_ERROR = "ERROR: Cannot assign the verified role without the `Manage Roles` permission! Server ID: {}"
     NO_VER_ROLE = ":x: Verification role not found. Please make sure the role is configured and still exists."
     OFF = "Disabled"
@@ -27,27 +30,27 @@ class WelcomeModeration(commands.Cog):
     ALL_START = "Verified check for all **`{}`** members started. This may take a while, updates will be sent."
     ALL_UPDATE = "**`{}`** out of `{}` members done. Current user: {}"
     # Ignored roles command strings.
-    TO_IGNORE_SET = ":white_check_mark: Successfully set the roles to ignore. Amount of ignored roles: {}"
-    TO_IGNORE_RESET = ":put_litter_in_its_place: Successfully cleared the role to ignore."
+    TO_IGNORE_SET = DONE + "Successfully set the roles to ignore. Amount of ignored roles: {}"
+    TO_IGNORE_RESET = BIN + "Successfully cleared the role to ignore."
     # Auto-verification strings.
     ROLE_RECEIVED = "{} you have received a role."
-    DELAY_NOTICE = ROLE_RECEIVED + "\nDepending on configuration, you may lose access to this channel in {} seconds."
+    DELAY_NOTICE = ROLE_RECEIVED + "\nYou will gain access to the rest of the server in {} seconds."
     # Delay command strings.
-    DELAY_SET = ":white_check_mark: Successfully set the verified role assignment delay to {} seconds."
-    DELAY_RESET = ":put_litter_in_its_place: Successfully deleted the verified role assignment delay."
+    DELAY_SET = DONE + "Successfully set the verified role assignment delay to {} seconds."
+    DELAY_RESET = BIN + "Successfully deleted the verified role assignment delay."
     UNVERIFIED = "Amount of unverified members: **{}** \nThe following members are not verified: \n{}"
     # Channel configuration strings.
-    CHANNEL_SET = ":white_check_mark: Successfully set the {m} messages to {c}. " \
-                  "If you want to disable welcome messages, perform the same command in __this__ channel."
-    CHANNEL_RESET = ":put_litter_in_its_place: Successfully disabled the {m} messages. " \
-                    "If you want to re-enable {m} messages, use this command in the channel you want to enable it in."
+    CHANNEL_SET = DONE + "Successfully set the {m} messages to {c}. " \
+                         "If you want to disable welcome messages, perform the same command in __this__ channel."
+    CHANNEL_RESET = BIN + "Successfully disabled the {m} messages. If you want to re-enable {m} messages, " \
+                          "use this command in the channel you want to enable it in."
     # Role configuration strings.
-    ROLE_SET = ":white_check_mark: Successfully set the verification role."
-    ROLE_RESET = ":put_litter_in_its_place: Verification role cleared. This also disables its functionality. " \
-                 "If you want to re-enable the verification functionality, use this command provided with a role."
+    ROLE_SET = DONE + "Successfully set the verification role."
+    ROLE_RESET = BIN + "Verification role cleared. This also disables its functionality. " \
+                       "If you want to re-enable it, use this command provided with a role."
     # Welcome message strings.
-    WELCOME_MSG_SET = ":white_check_mark: Successfully set the welcome message."
-    WELCOME_MSG_RESET = ":put_litter_in_its_place: Welcome message cleared."
+    WELCOME_MSG_SET = DONE + "Successfully set the welcome message."
+    WELCOME_MSG_RESET = BIN + "Welcome message cleared."
 
     def __init__(self, bot: Red):
         super().__init__()
