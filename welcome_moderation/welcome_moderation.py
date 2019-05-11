@@ -38,7 +38,7 @@ class WelcomeModeration(commands.Cog):
     # Delay command strings.
     DELAY_SET = DONE + "Successfully set the verified role assignment delay to {} seconds."
     DELAY_RESET = BIN + "Successfully deleted the verified role assignment delay."
-    UNVERIFIED = "Amount of unverified members: **{}** \nThe following members are not verified: \n{}"
+    UNVERIFIED = "Unverified member count: **{}** \nList of unverified members (sorted on join date):\n{}"
     # Channel configuration strings.
     CHANNEL_SET = DONE + "Successfully set the {m} messages to {c}. " \
                          "If you want to disable welcome messages, perform the same command in __this__ channel."
@@ -157,7 +157,7 @@ class WelcomeModeration(commands.Cog):
         verified_role = discord.utils.get(gld.roles, id=verified_id)
 
         if verified_role:
-            unv_members = [m for m in gld.members if verified_role not in m.roles]
+            unv_members = sorted((m for m in gld.members if verified_role not in m.roles), key=lambda x: x.joined_at)
             unv_count = len(unv_members)
             to_send = self.UNVERIFIED.format(unv_count, ", ".join((m.mention for m in unv_members[:75])))
             await ctx.send(to_send)
@@ -221,7 +221,7 @@ it will __reset__ its configuration!
     @_config_guild.command(name="verified_role")
     @commands.guild_only()
     @checks.admin_or_permissions(administrator=True)
-    async def set_verified_role(self, ctx, role: discord.Role=None):
+    async def set_verified_role(self, ctx, role: discord.Role = None):
         """Set the role that will be given to verified members
 
         If no role is provided, the currently set role will be deleted.
