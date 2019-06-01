@@ -4,13 +4,14 @@ import csv
 # Used by Red.
 import discord
 from redbot.core import commands
+from redbot.core.commands import Cog
 from redbot.core import checks, Config, data_manager
 from redbot.core.bot import Red
 
 
 # Local files.
 
-class DMLogger(commands.Cog):
+class DMLogger(Cog):
     """Log DMs sent to the bot to a csv file
 
     Note that DMs sent by the bot owner are completely ignored."""
@@ -29,6 +30,7 @@ class DMLogger(commands.Cog):
         self.config.register_global(msgs_since_export=0, periodic_log_threshold=None)
 
     # Events
+    @Cog.listener()
     async def on_message(self, msg: discord.Message):
         """Add message info to db"""
         channel = msg.channel

@@ -1,12 +1,13 @@
 import asyncio
 
 import discord
-from redbot.core import commands  # Changed from discord.ext
+from redbot.core import commands
+from redbot.core.commands import Cog
 from redbot.core import checks, Config
 from redbot.core.bot import Red
 
 
-class WelcomeModeration(commands.Cog):
+class WelcomeModeration(Cog):
     """Use custom welcome messages and a verification role on a guild-by-guild basis.
 
     The verification role will be given to a member if it obtains any role in whatever way,
@@ -65,6 +66,7 @@ class WelcomeModeration(commands.Cog):
                                    welcome_message="Welcome, {user}!")
 
     # Events
+    @Cog.listener()
     async def on_member_join(self, member):
         """Sends a customisable welcome message to a guild"""
         gld = member.guild
@@ -74,6 +76,7 @@ class WelcomeModeration(commands.Cog):
             welcome_channel = gld.get_channel(welcome_id)
             await welcome_channel.send(welcome_message.format(user=member.mention))
 
+    @Cog.listener()
     async def on_member_update(self, m_old, m_new):
         """Give a member the verified role if they received an eligible role"""
         gld = m_new.guild
