@@ -109,9 +109,8 @@ class FixedVarious(commands.Cog):
         """Check what someone is listening to"""
         if user is None:
             user = ctx.author
-        act = user.activity
-        if act and act.name == "Spotify":
-            spot = act
+        spot = next((act for act in user.activities if isinstance(act, discord.Spotify)), None)
+        if spot:
             # Create value for song field.
             mins, secs = divmod(spot.duration.seconds, 60)
             song_length = "{:02d}:{:02d}".format(mins, secs)
