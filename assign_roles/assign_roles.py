@@ -64,7 +64,7 @@ class AssignRoles(commands.Cog):
         await ctx.send(notice)
 
     @commands.guild_only()
-    @checks.admin_or_permissions(manage_server=True)
+    @checks.admin_or_permissions(manage_guild=True)
     @_assign.command(aliases=["authorize"])
     async def authorise(self, ctx, authorised_role: discord.Role, giveable_role: discord.Role):
         """Authorise one role to give another role
@@ -95,7 +95,7 @@ class AssignRoles(commands.Cog):
         await ctx.send(notice)
 
     @commands.guild_only()
-    @checks.admin_or_permissions(manage_server=True)
+    @checks.admin_or_permissions(manage_guild=True)
     @_assign.command(aliases=["deauthorize"])
     async def deauthorise(self, ctx, authorised_role: discord.Role, giveable_role: discord.Role):
         """Deauthorise one role to give another role
@@ -126,7 +126,7 @@ class AssignRoles(commands.Cog):
         await ctx.send(notice)
 
     @commands.guild_only()
-    @checks.mod_or_permissions(manage_server=True)
+    @checks.mod_or_permissions(manage_guild=True)
     @_assign.command()
     async def list(self, ctx):
         """Send an embed showing which roles can be given by other roles"""
