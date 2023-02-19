@@ -1,0 +1,13 @@
+{
+  "author": [
+    "#s#8059"
+  ],
+  "min_bot_version": "3.5.0.dev0",
+  "description": "Commands to gain insights into your server's population. Get a quick overview on how many members each of server's roles have, or see stats about how long members have been on your server.",
+  "install_msg": "Hello, thanks for installing this cog! The commands in here are some of the first I made back in 2018. If you have any suggestions in terms of stat commands, feel free to let me know!",
+  "short": "Commands to gain insights into your server's population.",
+  "name": "MemberStats",
+  "disabled": false,
+  "requirements": [],
+  "tags": ["slowmode", "roles", "spotify"]
+}

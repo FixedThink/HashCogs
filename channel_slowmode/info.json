@@ -1,0 +1,13 @@
+{
+  "author": [
+    "#s#8059"
+  ],
+  "min_bot_version": "3.5.0.dev0",
+  "description": "Configure the slowmode of a channel that you currently are not typing in. Useful when you want to change the slowmode, but do not want to disturb a currently active channel with a bot command (or when the execution of such a command can cause even more activity).",
+  "install_msg": "Thank you for installing this cog! This cog should be pretty much plug and play, hope you enjoy it!",
+  "short": "Configure slowmode in another channel.",
+  "name": "ChannelSlowmode",
+  "disabled": false,
+  "requirements": [],
+  "tags": ["slowmode", "moderation"]
+}

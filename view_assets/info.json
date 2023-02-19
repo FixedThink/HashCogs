@@ -1,0 +1,13 @@
+{
+  "author": [
+    "#s#8059"
+  ],
+  "min_bot_version": "3.5.0.dev0",
+  "description": "Display assets from users and servers (such as profile pictures, server logos and banners, etc)",
+  "install_msg": "Thank you for installing this cog! This cog should be pretty much plug and play, hope you enjoy it!",
+  "short": "Display assets from users and servers.",
+  "name": "ViewAssets",
+  "disabled": false,
+  "requirements": [],
+  "tags": ["avatar", "banner", "assets", "logo"]
+}

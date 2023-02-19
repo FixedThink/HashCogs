@@ -1,0 +1,13 @@
+{
+  "author": [
+    "#s#8059"
+  ],
+  "min_bot_version": "3.5.0.dev0",
+  "description": "See what a user is currently playing on spotify.",
+  "install_msg": "Hey there, thanks for installing my cog! This cog should be pretty much plug and play, hope you enjoy it!",
+  "short": "Spotify Now Playing.",
+  "name": "SpotifyNP",
+  "disabled": false,
+  "requirements": [],
+  "tags": ["music", "spotify"]
+}

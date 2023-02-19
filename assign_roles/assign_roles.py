@@ -1,12 +1,13 @@
 import discord
 
 from redbot.core import commands  # Changed from discord.ext
-from redbot.core import checks, Config
+from redbot.core import Config
 from redbot.core.bot import Red
 
 
 class AssignRoles(commands.Cog):
     """Authorise one role to give another role"""
+
     __author__ = "#s#8059"
 
     BIN = ":put_litter_in_its_place: "
@@ -16,7 +17,9 @@ class AssignRoles(commands.Cog):
     ASSIGN_ADDED = DONE + "Successfully assigned the `{}` role."
     ASSIGN_REMOVED = BIN + "Successfully removed the `{}` role."
     ASSIGN_NO_EVERYONE = ERROR + "You cannot give someone the Everyone role!"
-    AUTHORISE_EXISTS = ERROR + "The role you want to authorised is already authorised to give this role."
+    AUTHORISE_EXISTS = (
+        ERROR + "The role you want to authorised is already authorised to give this role."
+    )
     AUTHORISE_EMPTY = ERROR + "`{}` is not authorised to be assigned by any other roles."
     AUTHORISE_MISMATCH = ERROR + "{} is not currently authorised to give the `{}` role."
     AUTHORISE_NO_EVERYONE = ERROR + "You cannot authorise everyone to give a role!"
@@ -64,13 +67,15 @@ class AssignRoles(commands.Cog):
         await ctx.send(notice)
 
     @commands.guild_only()
-    @checks.admin_or_permissions(manage_server=True)
+    @commands.admin_or_permissions(manage_guild=True)
     @_assign.command(aliases=["authorize"])
     async def authorise(self, ctx, authorised_role: discord.Role, giveable_role: discord.Role):
         """Authorise one role to give another role
 
-        Allows all members with the role `authorised_role` to give the role `giveable_role` to everyone.
-        In order to authorise, your highest role must be strictly above the `authorised_role` (except for the owner).
+        Allows all members with the role `authorised_role` to give the role
+         `giveable_role` to everyone.
+        In order to authorise, your highest role must be strictly above the
+         `authorised_role` (except for the owner).
         """
         gld = ctx.guild
         server_dict = await self.config.guild(gld).roles()
@@ -83,7 +88,8 @@ class AssignRoles(commands.Cog):
             notice = self.AUTHORISE_NO_EVERYONE
         elif giveable_role.is_default():  # Same goes for role to be given.
             notice = self.AUTHORISE_NOT_DEFAULT
-        elif authorised_role >= author_max_role and ctx.author != gld.owner:  # Hierarchical role order check.
+        # Hierarchical role order check.
+        elif authorised_role >= author_max_role and ctx.author != gld.owner:
             notice = self.AUTHORISE_NO_HIGHER
         # Check if "pair" already exists.
         elif giveable_id in server_dict and authorised_id in server_dict[giveable_id]:
@@ -95,12 +101,13 @@ class AssignRoles(commands.Cog):
         await ctx.send(notice)
 
     @commands.guild_only()
-    @checks.admin_or_permissions(manage_server=True)
+    @commands.admin_or_permissions(manage_guild=True)
     @_assign.command(aliases=["deauthorize"])
     async def deauthorise(self, ctx, authorised_role: discord.Role, giveable_role: discord.Role):
         """Deauthorise one role to give another role
 
-        In order to deauthorise, your highest role must be strictly above the `authorised_role` (except for the owner).
+        In order to deauthorise, your highest role must be strictly above the `authorised_role`
+         (except for the owner).
         """
         gld = ctx.guild
         server_dict = await self.config.guild(gld).roles()
@@ -113,7 +120,9 @@ class AssignRoles(commands.Cog):
             notice = self.AUTHORISE_NO_EVERYONE
         elif giveable_role.is_default():  # Same goes for role to be given.
             notice = self.AUTHORISE_NOT_DEFAULT
-        elif authorised_role >= author_max_role and ctx.author != gld.owner:  # Hierarchical role order check.
+        elif (
+            authorised_role >= author_max_role and ctx.author != gld.owner
+        ):  # Hierarchical role order check.
             notice = self.AUTHORISE_NO_HIGHER
         elif giveable_id not in server_dict:
             notice = self.AUTHORISE_EMPTY.format(giveable_role.name)
@@ -126,7 +135,7 @@ class AssignRoles(commands.Cog):
         await ctx.send(notice)
 
     @commands.guild_only()
-    @checks.mod_or_permissions(manage_server=True)
+    @commands.mod_or_permissions(manage_guild=True)
     @_assign.command()
     async def list(self, ctx):
         """Send an embed showing which roles can be given by other roles"""
@@ -135,15 +144,21 @@ class AssignRoles(commands.Cog):
         embed = discord.Embed(colour=0x00D8FF, title="Assign authorisations")
 
         for role_id, auth_list in server_dict.items():
-            role = discord.utils.get(gld.roles, id=role_id)
+            role: discord.Role = discord.utils.get(gld.roles, id=role_id)
             if role is not None:
                 auth_roles = (discord.utils.get(gld.roles, id=i) for i in auth_list)
+                r: discord.Role
                 mentions_str = ", ".join(r.mention for r in auth_roles if r is not None)
                 if len(mentions_str) > 0:  # Prevent empty fields from being sent.
                     embed.add_field(name=role.name, value=mentions_str)
-        embed.description = self.LIST_DESC_EMPTY if len(embed.fields) == 0 else self.LIST_DESC_NORMAL
+        embed.description = (
+            self.LIST_DESC_EMPTY if len(embed.fields) == 0 else self.LIST_DESC_NORMAL
+        )
         await ctx.send(embed=embed)
 
     # Utilities
 
     # Config
+    async def red_delete_data_for_user(self, *, _requester, _user_id):
+        """Do nothing, as no user data is stored."""
+        pass

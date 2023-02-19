@@ -1,0 +1,13 @@
+{
+  "author": [
+    "#s#8059"
+  ],
+  "min_bot_version": "3.5.0.dev0",
+  "description": "Perform conversions using snowflake IDs (Discord IDs with additional information embedded in them).",
+  "install_msg": "Thank you for installing this cog! This cog should be pretty much plug and play, hope you enjoy it!",
+  "short": "Convert Discord IDs to timestamps",
+  "name": "SnowflakeTools",
+  "disabled": false,
+  "requirements": [],
+  "tags": ["snowflake", "timestamp", "tools", "utilities"]
+}

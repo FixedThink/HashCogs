@@ -2,6 +2,7 @@
   "author": [
     "#s#8059"
   ],
+  "min_bot_version": "3.5.0.dev0",
   "description": "Use custom welcome messages and a verification role on a guild-by-guild basis.\nThe verification role will be given to a member if it obtains any role in whatever way, except if the role obtained is blacklisted in the settings.\nThe use for this is to have one role to set up permissions for. If used properly, this role can only be given to those who satisfy the Discord verification level.\nExample usage: a guild that has a role for each rank of a certain game, but want one role to manage the permissions of all people that have a role (whilst not giving those perms to `@everyone`). Both the welcome functionality and verification functionality are optional and customisable.",
   "install_msg": "Hey there, thanks for installing my cog! Make sure to use `[p]wm_set` for the settings, and `[p]wm_status` for the current configuration!",
   "short": "Use custom welcome messages and a verification role on a guild-by-guild basis.",
