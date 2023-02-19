@@ -11,8 +11,8 @@ Readme last updated: **2023-02-19**
 ### Compatibility note
 All cogs in this repository have RedBot 3.5 (including dev) as their minimum supported version!
 For support of earlier versions of RedBot 3, please check out 
-[this revision](https://github.com/FixedThink/HashCogs/tree/1d6ff7f1d2c066713ec137fc5edfe1088cb5de1f)
-of the repository.
+[this branch](https://github.com/FixedThink/HashCogs/tree/v3.4_old)
+in the repository.
 
 Furthermore, the `FixedVarious` module has been split up in several modules. 
 The MemberStats module inherited its config identifier, as the commands in there were the only ones using Config anyway.
