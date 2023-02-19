@@ -125,7 +125,4 @@ With such a role, authorisation can be automatically granted if a moderator give
 
 # Licensing
 
-I am aware that this repository currently does not have a license. 
-While I am thinking of which license suits this repository best, 
-you have my consent to use the modules enlisted in this repository on your own RedBot instance.
-I hope that for now this suffices to use the commands in here :D
+See `LICENSE` for usage terms!
