@@ -74,7 +74,7 @@ class DMLogger(Cog):
                     await owner.send(content=self.AUTO_TOO_BIG.format(fs=fs, fl=fl))
                 else:  # File can be sent to owner.
                     await owner.send(content=self.AUTO_EXPORT, file=discord.File(self.CSV_FP))
-                    await self.config.msgs_since_export.set(0)
+                await self.config.msgs_since_export.set(0)
             else:
                 await self.config.msgs_since_export.set(export_count)  # Incremented.
 
